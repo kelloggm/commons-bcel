@@ -17,6 +17,12 @@
  */
 package org.apache.bcel.generic;
 
+/*>>>
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.signature.qual.BinaryName;
+import org.checkerframework.checker.signature.qual.FieldDescriptor;
+*/
+
 import org.apache.bcel.Const;
 import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.JavaClass;
@@ -28,13 +34,18 @@ import org.apache.bcel.classfile.JavaClass;
  */
 public abstract class ReferenceType extends Type {
 
-    protected ReferenceType(final byte t, final String s) {
+    // There are three subtypes:
+    //  * For ObjectType, the string s is a @FieldDescriptor.
+    //  * For ArrayType, the string s is a @FieldDescriptor.
+    //  * For UninitializedObjectType, s is a string "<UNINITIALIZED OBJECT OF TYPE ...>"
+    protected ReferenceType(final byte t, final @FieldDescriptor String s) {
         super(t, s);
     }
 
 
     /** Class is non-abstract but not instantiable from the outside
      */
+    @SuppressWarnings("signature") // special case for null object
     ReferenceType() {
         super(Const.T_OBJECT, "<null object>");
     }
@@ -190,7 +201,7 @@ public abstract class ReferenceType extends Type {
      * @throws ClassNotFoundException on failure to find superclasses of this
      *  type, or the type passed as a parameter
      */
-    public ReferenceType getFirstCommonSuperclass( final ReferenceType t ) throws ClassNotFoundException {
+    public /*@Nullable*/ ReferenceType getFirstCommonSuperclass( final ReferenceType t ) throws ClassNotFoundException {
         if (this.equals(Type.NULL)) {
             return t;
         }
@@ -214,9 +225,10 @@ public abstract class ReferenceType extends Type {
             if ((arrType1.getDimensions() == arrType2.getDimensions())
                     && arrType1.getBasicType() instanceof ObjectType
                     && arrType2.getBasicType() instanceof ObjectType) {
-                return new ArrayType(((ObjectType) arrType1.getBasicType())
-                        .getFirstCommonSuperclass((ObjectType) arrType2.getBasicType()), arrType1
-                        .getDimensions());
+                ObjectType basicType1 = (ObjectType) arrType1.getBasicType();
+                ObjectType basicType2 = (ObjectType) arrType2.getBasicType();
+                return new ArrayType(basicType1.getFirstCommonSuperclass(basicType2),
+                                     arrType1.getDimensions());
             }
         }
         if ((this instanceof ArrayType) || (t instanceof ArrayType)) {
@@ -274,7 +286,7 @@ public abstract class ReferenceType extends Type {
      *  type, or the type passed as a parameter
      */
     @Deprecated
-    public ReferenceType firstCommonSuperclass( final ReferenceType t ) throws ClassNotFoundException {
+    public /*@Nullable*/ ReferenceType firstCommonSuperclass( final ReferenceType t ) throws ClassNotFoundException {
         if (this.equals(Type.NULL)) {
             return t;
         }

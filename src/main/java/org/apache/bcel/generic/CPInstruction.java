@@ -17,6 +17,10 @@
  */
 package org.apache.bcel.generic;
 
+/*>>>
+import org.checkerframework.checker.initialization.qual.UnknownInitialization;
+*/
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -128,7 +132,7 @@ public abstract class CPInstruction extends Instruction implements TypedInstruct
      * @param index in  constant pool.
      */
     @Override
-    public void setIndex( final int index ) { // TODO could be package-protected?
+    public void setIndex( /*@UnknownInitialization*/ CPInstruction this, final int index ) { // TODO could be package-protected?
         if (index < 0) {
             throw new ClassGenException("Negative index value: " + index);
         }
@@ -139,9 +143,11 @@ public abstract class CPInstruction extends Instruction implements TypedInstruct
     /** @return type related with this instruction.
      */
     @Override
+    @SuppressWarnings("signature") // convert @ClassGetName to @FieldDescriptor
     public Type getType( final ConstantPoolGen cpg ) {
         final ConstantPool cp = cpg.getConstantPool();
         String name = cp.getConstantString(index, org.apache.bcel.Const.CONSTANT_Class);
+        // This if statement converts @ClassGetName into @FieldDescriptor (EXCEPT it doesn't work for primitive types)
         if (!name.startsWith("[")) {
             name = "L" + name + ";";
         }

@@ -17,6 +17,10 @@
  */
 package org.apache.bcel.classfile;
 
+/*>>>
+import org.checkerframework.checker.nullness.qual.Nullable;
+*/
+
 import java.io.DataInput;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -104,6 +108,7 @@ public abstract class Constant implements Cloneable, Node {
     /**
      * @return deep copy of this constant
      */
+    @SuppressWarnings("nullness") // bug in BCEL: uncaught exception
     public Constant copy() {
         try {
             return (Constant) super.clone();
@@ -193,7 +198,7 @@ public abstract class Constant implements Cloneable, Node {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals( final Object obj ) {
+    public boolean equals( final /*@Nullable*/ Object obj ) {
         return bcelComparator.equals(this, obj);
     }
 

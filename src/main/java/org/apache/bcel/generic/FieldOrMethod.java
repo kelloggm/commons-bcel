@@ -17,16 +17,16 @@
  */
 package org.apache.bcel.generic;
 
+/*>>>
+import org.checkerframework.checker.signature.qual.BinaryNameForNonArray;
+import org.checkerframework.framework.qual.AnnotatedFor;
+*/
+
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.ConstantCP;
 import org.apache.bcel.classfile.ConstantNameAndType;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.ConstantUtf8;
-
-/*>>>
-import org.checkerframework.checker.signature.qual.BinaryNameForNonArray;
-import org.checkerframework.framework.qual.AnnotatedFor;
-*/
 
 /**
  * Super class for InvokeInstruction and FieldInstruction, since they have
@@ -55,6 +55,7 @@ public abstract class FieldOrMethod extends CPInstruction implements LoadClass {
 
     /** @return signature of referenced method/field.
      */
+    // TODO: for a Field, probably is @FieldDescriptor
     public String getSignature( final ConstantPoolGen cpg ) {
         final ConstantPool cp = cpg.getConstantPool();
         final ConstantCP cmr = (ConstantCP) cp.getConstant(super.getIndex());
@@ -85,6 +86,7 @@ public abstract class FieldOrMethod extends CPInstruction implements LoadClass {
      *
      */
     @Deprecated
+    @SuppressWarnings("signature") // string manipulation
     public /*@BinaryNameForNonArray*/ String getClassName( final ConstantPoolGen cpg ) {
         final ConstantPool cp = cpg.getConstantPool();
         final ConstantCP cmr = (ConstantCP) cp.getConstant(super.getIndex());

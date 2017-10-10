@@ -17,6 +17,12 @@
  */
 package org.apache.bcel.generic;
 
+/*>>>
+import org.checkerframework.checker.initialization.qual.UnknownInitialization;
+import org.checkerframework.checker.interning.qual.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+*/
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,14 +30,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.bcel.classfile.Utility;
-
-/*>>>
-import org.checkerframework.checker.interning.qual.*;
-*/
-
-/*>>>
-import org.checkerframework.checker.interning.qual.*;
-*/
 
 /**
  * Instances of this class give users a handle to the instructions contained in
@@ -85,7 +83,7 @@ public /*@UsesObjectEquals*/ class InstructionHandle {
      * Replace current instruction contained in this handle.
      * Old instruction is disposed using Instruction.dispose().
      */
-    public void setInstruction( final Instruction i ) { // Overridden in BranchHandle TODO could be package-protected?
+    public void setInstruction( /*>>> @UnknownInitialization InstructionHandle this, */final Instruction i ) { // Overridden in BranchHandle TODO could be package-protected?
         if (i == null) {
             throw new ClassGenException("Assigning null to handle");
         }
@@ -121,7 +119,7 @@ public /*@UsesObjectEquals*/ class InstructionHandle {
         setInstruction(i);
     }
 
-    private static InstructionHandle ih_list = null; // List of reusable handles
+    private static /*@Nullable*/ InstructionHandle ih_list = null; // List of reusable handles
 
 
     /** Factory method.
@@ -181,6 +179,7 @@ public /*@UsesObjectEquals*/ class InstructionHandle {
     /**
      * Delete contents, i.e., remove user access and make handle reusable.
      */
+    @SuppressWarnings("nullness") // object won't be used after calling dispose()
     void dispose() {
         next = prev = null;
         instruction.dispose();
@@ -284,7 +283,7 @@ public /*@UsesObjectEquals*/ class InstructionHandle {
      *
      * @param key the key object to store/retrieve the attribute
      */
-    public Object getAttribute( final Object key ) {
+    public /*@Nullable*/ Object getAttribute( final Object key ) {
         if (attributes != null) {
             return attributes.get(key);
         }

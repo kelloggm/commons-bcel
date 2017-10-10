@@ -17,16 +17,16 @@
  */
 package org.apache.bcel.generic;
 
+/*>>>
+import org.checkerframework.checker.signature.qual.ClassGetName;
+*/
+
 import java.util.StringTokenizer;
 
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantCP;
 import org.apache.bcel.classfile.ConstantPool;
-
-/*>>>
-import org.checkerframework.checker.signature.qual.ClassGetName;
-*/
 
 /**
  * Super class for the INVOKExxx family of instructions.
@@ -103,7 +103,8 @@ public abstract class InvokeInstruction extends FieldOrMethod implements Excepti
      * @throws IllegalArgumentException if the referenced class is an array (this should not happen)
      */
     @Override
-    public /*@ClassGetName*/ String getClassName( final ConstantPoolGen cpg ) {
+    // TODO: return type must be one of fully-qualified name, binary name, Class.getName
+    public String getClassName( final ConstantPoolGen cpg ) {
         final ConstantPool cp = cpg.getConstantPool();
         final ConstantCP cmr = (ConstantCP) cp.getConstant(super.getIndex());
         final String className = cp.getConstantString(cmr.getClassIndex(), Const.CONSTANT_Class);

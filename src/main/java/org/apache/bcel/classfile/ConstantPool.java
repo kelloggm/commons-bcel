@@ -17,16 +17,16 @@
  */
 package org.apache.bcel.classfile;
 
+/*>>>
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.AnnotatedFor;
+*/
+
 import java.io.DataInput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.apache.bcel.Const;
-
-/*>>>
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.AnnotatedFor;
-*/
 
 /**
  * This class represents the constant pool, i.e., a table of constants, of
@@ -360,6 +360,7 @@ public class ConstantPool implements Cloneable, Node {
     /**
      * @return deep copy of this constant pool
      */
+    @SuppressWarnings("nullness") // BCEL bug: ignored exception
     public ConstantPool copy() {
         ConstantPool c = null;
         try {
